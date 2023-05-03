@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { ethers, BigNumber } from "ethers";
 import { PROPERTY_TOKEN_FACTORY_ADDRESS, SHARES_TOKEN_ADDRESS } from "../config";
 import PropertyTokenFactoryArtifact from "../contracts/PropertyTokenFactory.json";
 import RealEstateShareTokenArtifact from "../contracts/RealEstateShareToken.json";
@@ -24,22 +24,19 @@ export const getUserProperties = async (): Promise<UserProperty[]> => {
             signer
         );
 
-        const allProperties = await propertyTokenFactoryContract.getAllProperties();
+        const userPropertyIds = await shareTokenContract.getPropertiesForShareholder(accountAddress);
 
         // Filter properties where the user has shares
         const userProperties: UserProperty[] = await Promise.all(
-            allProperties.map(async (property: UserProperty) => {
-                const userShares = await shareTokenContract.propertyBalanceOf(property.propertyId, accountAddress);
-                return userShares.toNumber() > 0 ? property : null;
+            userPropertyIds.map(async (id: BigNumber) => {
+                return await propertyTokenFactoryContract.getProperty(id);
             })
         );
 
-        const filteredUserProperties = userProperties.filter((property) => property !== null);
-
         // Fetch shareholders for each user property
         const userPropertiesWithShareholders: UserProperty[] = await Promise.all(
-            filteredUserProperties.map(async (property) => {
-                const shareholders = await shareTokenContract.getPropertyShareholders(property.propertyId);
+            userProperties.map(async (property) => {
+                const shareholders = await shareTokenContract.getPropertyShareholders(property.id);
                 return { ...property, shareholders };
             })
         );
@@ -148,8 +145,9 @@ export const getUserRequestedProperties = async (): Promise<UserRequestedPropert
             signer
         );
 
-        const result = await propertyTokenFactoryContract.getUserPropertyRequests(account);
-        return result;
+        const result = await propertyTokenFactoryContract.getUserPropertys(account);
+
+        return result.filter(property => property.status === 2);
     } catch (error) {
         console.error('Error while sending the transaction:', error);
     }

@@ -9,11 +9,8 @@ const PropertyCard = ({ property, shareholders }) => {
     <Card maxW='lg'>
       <CardHeader>
         <Text fontSize="xl" fontWeight="semibold">
-          {property.name} ({property.propertyId.toNumber()}) - $
-          {property.propertyValue.toNumber()}
-        </Text>
-        <Text fontSize="lg" color="gray.600">
-          {property.tokenAddress}
+          {property.name} ({property.id.toNumber()}) - $
+          {property.totalValue.toNumber()}
         </Text>
       </CardHeader>
       <Divider />

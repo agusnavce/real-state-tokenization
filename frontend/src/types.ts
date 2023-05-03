@@ -1,5 +1,5 @@
 export interface Property {
-    propertyId: number;
+    id: number;
     name: string;
     description: string;
     location: string;

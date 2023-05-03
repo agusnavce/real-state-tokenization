@@ -28,11 +28,14 @@ const PropertyRequestCard: React.FC<PropertyRequestCardProps> = ({ property }) =
                     Location: {property.location} <br />
                     Available Shares: {property.shares.toString()} <br />
                 </Text>
-                {property.status === 1 && <Badge variant='solid' colorScheme='green'>
-                    Approved
+                {property.status === 0 && <Badge variant='solid' colorScheme='green'>
+                    Pending Approval
                 </Badge>}
-                {property.status === 2 && <Badge variant='solid' colorScheme='red'>
-                    Not Approved
+                {property.status === 1 && <Badge variant='solid' colorScheme='gray'>
+                    Ready to pay for shares
+                </Badge>}
+                {property.status === 3 && <Badge variant='solid' colorScheme='red'>
+                    Rejected
                 </Badge>}
             </CardBody>
         </Card >

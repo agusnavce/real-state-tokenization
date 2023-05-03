@@ -25,7 +25,7 @@ function MyProperties () {
     return (
         <Tabs isFitted variant="enclosed">
             <TabList mb="1em">
-                <Tab>Tokenized Properties</Tab>
+                <Tab>My properties with shares</Tab>
                 <Tab>Requested Properties</Tab>
             </TabList>
             <TabPanels>

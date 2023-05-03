@@ -1,5 +1,15 @@
 const fs = require("fs").promises;
 
+async function copyJsonFile (sourceFilePath, destFilePath) {
+  try {
+    const jsonData = await fs.readFile(sourceFilePath, 'utf-8');
+    await fs.writeFile(destFilePath, jsonData);
+    console.log(`Successfully copied ${sourceFilePath} to ${destFilePath}`);
+  } catch (err) {
+    console.error(`Error copying ${sourceFilePath} to ${destFilePath}: ${err}`);
+  }
+}
+
 async function main () {
   const [deployer, addr1] = await hre.ethers.getSigners();
   console.log("Deploying contracts with the account:", deployer.address);
@@ -54,6 +64,12 @@ export const SHARES_TOKEN_ADDRESS = "${sharesToken.address}";
 export const PROPERTY_TOKEN_FACTORY_ADDRESS = "${propertyTokenFactory.address}";
 export const ADMIN_CONTRACT_ACCOUNT_ADDRESS = "${deployer.address}";
 `;
+
+  await copyJsonFile("artifacts/contracts/PropertyTokenFactory.sol/PropertyTokenFactory.json",
+    "../frontend/src/contracts/PropertyTokenFactory.json")
+  await copyJsonFile("artifacts/contracts/RealEstateShareToken.sol/RealEstateShareToken.json",
+    "../frontend/src/contracts/RealEstateShareToken.json")
+
   await fs.writeFile("../frontend/src/config.js", configContent);
   console.log("Contract addresses written to config.js");
 
