@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Restricted Access Example</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+
+      h1 {
+        margin-bottom: 20px;
+      }
+
+      button {
+        font-size: 16px;
+        padding: 10px 20px;
+        margin-right: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0069d9;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Restricted Access Example</h1>
+    <div id="content" class="hidden">
+      <p>This content is only visible to users who have connected their wallet.</p>
+    </div>
+    <div id="connect-wallet">
+      <p>Please connect your wallet to access the content:</p>
+      <p>
+        <button onclick="connectMetamask()">Connect to MetaMask</button>
+        <button onclick="connectWalletConnect()">Connect to WalletConnect</button>
+      </p>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
