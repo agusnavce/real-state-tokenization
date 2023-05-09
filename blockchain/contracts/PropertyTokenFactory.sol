@@ -14,8 +14,6 @@ contract PropertyTokenFactory is Ownable, PropertyRequestFactory, ERC721 {
 
     RealEstateShareToken public sharesToken;
 
-    mapping(uint256 => PropertyLib.Property) private propertyMap;
-
     event PropertyTokenCreated(uint256 propertyId);
 
     constructor(
@@ -69,6 +67,10 @@ contract PropertyTokenFactory is Ownable, PropertyRequestFactory, ERC721 {
 
     function approvePropertyRequest(uint _requestId) public onlyOwner {
         approveRequest(_requestId);
+    }
+
+    function rejectPropertyRequest(uint _requestId) public onlyOwner {
+        rejectRequest(_requestId);
     }
 
     function toggleAvailability(

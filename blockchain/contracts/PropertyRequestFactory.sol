@@ -7,7 +7,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract PropertyRequestFactory is Ownable {
     using PropertyLib for PropertyLib.Property;
 
-    mapping(uint256 => PropertyLib.Property) public propertyRequests;
+    mapping(uint256 => PropertyLib.Property) public propertyMap;
+    PropertyLib.Property[] private requestedProperties;
     uint256 public propertyRequestCount;
 
     mapping(address => uint256[]) private userPropertyRequests;
@@ -32,14 +33,15 @@ contract PropertyRequestFactory is Ownable {
             false,
             msg.sender
         );
-        propertyRequests[requestId] = newRequest;
+        propertyMap[requestId] = newRequest;
         userPropertyRequests[msg.sender].push(requestId);
+        requestedProperties.push(newRequest);
     }
 
     function getPropertyRequest(
         uint256 _requestId
     ) public view returns (PropertyLib.Property memory) {
-        return propertyRequests[_requestId];
+        return propertyMap[_requestId];
     }
 
     function getUserPropertys(
@@ -52,7 +54,7 @@ contract PropertyRequestFactory is Ownable {
 
         for (uint256 i = 0; i < userRequestIds.length; i++) {
             uint256 requestId = userRequestIds[i];
-            userRequests[i] = propertyRequests[requestId];
+            userRequests[i] = propertyMap[requestId];
         }
 
         return userRequests;
@@ -60,13 +62,55 @@ contract PropertyRequestFactory is Ownable {
 
     function approveRequest(uint256 _requestId) public onlyOwner {
         require(
-            propertyRequests[_requestId].status ==
+            propertyMap[_requestId].status ==
                 PropertyLib.RequestStatus.PendingApproval,
             "Request is not pending approval"
         );
 
-        propertyRequests[_requestId].status = PropertyLib
+        propertyMap[_requestId].status = PropertyLib.RequestStatus.Approved;
+
+        uint256 indexToRemove = 0;
+        for (uint256 i = 0; i < requestedProperties.length; i++) {
+            if (requestedProperties[i].id == _requestId) {
+                indexToRemove = i;
+                break;
+            }
+        }
+
+        // Remove the approved property from the requestedProperties array
+        requestedProperties[indexToRemove] = requestedProperties[
+            requestedProperties.length - 1
+        ];
+        requestedProperties.pop();
+    }
+
+    function rejectRequest(uint256 _requestId) public onlyOwner {
+        require(
+            propertyMap[_requestId].status ==
+                PropertyLib.RequestStatus.PendingApproval,
+            "Request is not pending approval"
+        );
+
+        propertyMap[_requestId].status = PropertyLib.RequestStatus.Rejected;
+
+        uint256 indexToAdjust = 0;
+        for (uint256 i = 0; i < requestedProperties.length; i++) {
+            if (requestedProperties[i].id == _requestId) {
+                indexToAdjust = i;
+                break;
+            }
+        }
+
+        requestedProperties[indexToAdjust].status = PropertyLib
             .RequestStatus
-            .Approved;
+            .Rejected;
+    }
+
+    function getAllRequestedProperties()
+        public
+        view
+        returns (PropertyLib.Property[] memory)
+    {
+        return requestedProperties;
     }
 }
