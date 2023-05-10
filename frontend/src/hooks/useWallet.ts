@@ -69,8 +69,6 @@ const useWallet = (): Wallet => {
       setAddress(address);
       checkIsContractOwner(address);
       setConnected(true);
-    } else {
-      disconnectWallet();
     }
   };
 

@@ -40,9 +40,6 @@ const TokenizeForm: React.FC<TokenizeFormProps> = ({ onSubmit }) => {
   return (
     <Box as='form' onSubmit={handleSubmit}>
       <VStack spacing={4}>
-        <Text fontSize='xl' fontWeight='semibold'>
-          Request new property addition
-        </Text>
         <FormControl id='name'>
           <FormLabel>Name</FormLabel>
           <Input

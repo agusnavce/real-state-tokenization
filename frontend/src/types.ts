@@ -1,14 +1,14 @@
 export interface Property {
-  id: number;
+  id: { toNumber(): number };
   name: string;
   description: string;
   location: string;
-  totalValue: number;
+  totalValue: { toNumber(): number };
   shares: number;
 }
 
 export interface UserProperty extends Property {
-  shareholders: string[];
+  shareholders: Shareholder[];
 }
 
 export interface EthereumWindow extends Window {
@@ -32,4 +32,11 @@ export interface PropertyDetails {
   location: string;
   totalValue: number;
   shares: number;
+}
+export interface Shareholder {
+  shareholder: string;
+  shareAmount: {
+    toNumber(): number;
+  };
+  propertyId?: string;
 }

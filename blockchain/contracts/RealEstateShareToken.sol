@@ -10,6 +10,7 @@ contract RealEstateShareToken is ERC20 {
     struct Shareholder {
         address shareholder;
         uint256 shareAmount;
+        uint256 propertyId;
     }
 
     constructor(string memory name, string memory symbol) ERC20(name, symbol) {}
@@ -78,6 +79,7 @@ contract RealEstateShareToken is ERC20 {
 
         for (uint256 i = 0; i < shareholders.length; i++) {
             Shareholder memory shareholderData = Shareholder({
+                propertyId: propertyId,
                 shareholder: shareholders[i],
                 shareAmount: _propertyShareBalances[propertyId][shareholders[i]]
             });
@@ -146,5 +148,26 @@ contract RealEstateShareToken is ERC20 {
         address shareholder
     ) public view returns (uint256[] memory) {
         return _userPropertyIds[shareholder];
+    }
+
+    function getUserShares(
+        address shareholder
+    ) public view returns (Shareholder[] memory) {
+        uint256[] memory propertyIds = _userPropertyIds[shareholder];
+        Shareholder[] memory userShares = new Shareholder[](propertyIds.length);
+
+        for (uint256 i = 0; i < propertyIds.length; i++) {
+            uint256 propertyId = propertyIds[i];
+            uint256 shareAmount = _propertyShareBalances[propertyId][
+                shareholder
+            ];
+            userShares[i] = Shareholder({
+                propertyId: propertyId,
+                shareholder: shareholder,
+                shareAmount: shareAmount
+            });
+        }
+
+        return userShares;
     }
 }

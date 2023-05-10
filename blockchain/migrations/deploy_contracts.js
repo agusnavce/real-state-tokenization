@@ -62,14 +62,15 @@ async function main () {
   const configContent = `
 export const SHARES_TOKEN_ADDRESS = "${sharesToken.address}";
 export const PROPERTY_TOKEN_FACTORY_ADDRESS = "${propertyTokenFactory.address}";
-export const ADMIN_CONTRACT_ACCOUNT_ADDRESS = "${deployer.address}";
+export const PROPERTY_TOKEN_MANAGER_ADDRESS = "${propertyTokenManager.address}";
 `;
 
   await copyJsonFile("artifacts/contracts/PropertyTokenFactory.sol/PropertyTokenFactory.json",
     "../frontend/src/contracts/PropertyTokenFactory.json")
   await copyJsonFile("artifacts/contracts/RealEstateShareToken.sol/RealEstateShareToken.json",
     "../frontend/src/contracts/RealEstateShareToken.json")
-
+  await copyJsonFile("artifacts/contracts/PropertyTokenManager.sol/PropertyTokenManager.json",
+    "../frontend/src/contracts/PropertyTokenManager.json")
   await fs.writeFile("../frontend/src/config.js", configContent);
   console.log("Contract addresses written to config.js");
 

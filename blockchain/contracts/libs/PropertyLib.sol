@@ -34,4 +34,12 @@ library PropertyLib {
         SharesPaid,
         Rejected
     }
+
+    struct SaleOrder {
+        uint256 index;
+        address seller;
+        uint256 propertyId;
+        uint256 shareAmount;
+        uint256 pricePerShare;
+    }
 }

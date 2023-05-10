@@ -31,8 +31,6 @@ contract PropertyTokenManager is Ownable {
         );
 
         request.status = PropertyLib.RequestStatus.SharesPaid;
-        (bool sent, ) = owner().call{value: msg.value}("");
-        require(sent, "Failed to send Ether: Not creating Property");
 
         propertyTokenFactory.createPropertyToken(request);
 

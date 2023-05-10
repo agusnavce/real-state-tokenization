@@ -17,7 +17,7 @@ interface PropertyRequestCardProps {
   property: UserRequestedProperty;
   isOwner: boolean;
   onApprove?: (id: number) => void;
-  onPayForShares?: (id: number) => void;
+  onPayForShares?: (id: number, value: number) => Promise<void>;
   onReject?: (id: number) => void;
 }
 
@@ -94,7 +94,7 @@ const PropertyRequestCard: React.FC<PropertyRequestCardProps> = ({
                 colorScheme='teal'
                 onClick={() => {
                   if (onPayForShares) {
-                    onPayForShares(property.id);
+                    onPayForShares(property.id, property.totalValue);
                   }
                 }}
               >

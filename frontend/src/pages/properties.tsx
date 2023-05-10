@@ -13,6 +13,7 @@ import {
   TabPanel,
 } from '@chakra-ui/react';
 import useWallet from '../hooks/useWallet';
+import { payForShares } from '../lib/property';
 
 function MyProperties() {
   const { address } = useWallet();
@@ -28,6 +29,12 @@ function MyProperties() {
     fetchUserRequestedProperties();
   }, [address]);
 
+  const handlePayForShares = async (id: number, value: number) => {
+    await payForShares(id, value);
+    fetchProperties();
+    fetchUserRequestedProperties();
+  };
+
   return (
     <Tabs isFitted variant='enclosed'>
       <TabList mb='1em'>
@@ -39,10 +46,7 @@ function MyProperties() {
           <Grid templateColumns='repeat(auto-fit, minmax(300px, 1fr))' gap={4}>
             {properties.map((property, index) => (
               <GridItem key={index}>
-                <PropertyCard
-                  property={property}
-                  shareholders={property.shareholders}
-                />
+                <PropertyCard property={property} />
               </GridItem>
             ))}
           </Grid>
@@ -54,6 +58,7 @@ function MyProperties() {
                 <PropertyRequestCard
                   property={requestedProperty}
                   isOwner={false}
+                  onPayForShares={handlePayForShares}
                 />
               </GridItem>
             ))}

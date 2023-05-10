@@ -1,14 +1,32 @@
-import React from "react";
-import {
-  Card, Text, CardHeader, CardBody, Divider,
-  UnorderedList, ListItem
-} from "@chakra-ui/react";
+// components/PropertyCard.tsx
 
-const PropertyCard = ({ property, shareholders }) => {
+import React, { useState } from 'react';
+import {
+  Card,
+  Text,
+  CardHeader,
+  CardBody,
+  Divider,
+  Button,
+} from '@chakra-ui/react';
+import ShareholdersList from './ShareholderList';
+import { UserProperty } from '../types';
+
+interface PropertyCardProps {
+  property: UserProperty;
+}
+
+const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
+  const [showShareholders, setShowShareholders] = useState(false);
+
+  const toggleShareholders = () => {
+    setShowShareholders(!showShareholders);
+  };
+
   return (
     <Card maxW='lg'>
       <CardHeader>
-        <Text fontSize="xl" fontWeight="semibold">
+        <Text fontSize='xl' fontWeight='semibold'>
           {property.name} ({property.id.toNumber()}) - $
           {property.totalValue.toNumber()}
         </Text>
@@ -19,17 +37,15 @@ const PropertyCard = ({ property, shareholders }) => {
           Description: {property.description} <br />
           Location: {property.location} <br />
         </Text>
-        <Text fontWeight="medium">Shareholders:</Text>
-        <UnorderedList>
-          {shareholders.map((shareholder, index) => (
-            <ListItem key={index}>
-              {shareholder.shareholder} - {shareholder.shareAmount.toNumber()}{" "}
-              shares
-            </ListItem>
-          ))}
-        </UnorderedList>
+        <Button colorScheme='blue' onClick={toggleShareholders} mt={2}>
+          {showShareholders ? 'Hide Shareholders' : 'View Shareholders'}
+        </Button>
+        <ShareholdersList
+          shareholders={property.shareholders}
+          showShareholders={showShareholders}
+        />
       </CardBody>
-    </Card >
+    </Card>
   );
 };
 

@@ -1,8 +1,10 @@
 import { ethers, BigNumber } from 'ethers';
 import {
   PROPERTY_TOKEN_FACTORY_ADDRESS,
+  PROPERTY_TOKEN_MANAGER_ADDRESS,
   SHARES_TOKEN_ADDRESS,
 } from '../config';
+import PropertyTokenManagerArtifact from '../contracts/PropertyTokenManager.json';
 import PropertyTokenFactoryArtifact from '../contracts/PropertyTokenFactory.json';
 import RealEstateShareTokenArtifact from '../contracts/RealEstateShareToken.json';
 import {
@@ -11,6 +13,7 @@ import {
   UserProperty,
   UserRequestedProperty,
 } from '../types';
+import { getDollarToEtherConversionRate } from './helper';
 
 export const getUserProperties = async (): Promise<UserProperty[]> => {
   try {
@@ -58,6 +61,53 @@ export const getUserProperties = async (): Promise<UserProperty[]> => {
   } catch (error) {
     console.error('Error while sending the transaction:', error);
     return [];
+  }
+};
+
+export const payForShares = async (
+  id: number,
+  value: number
+): Promise<void> => {
+  const provider = new ethers.providers.Web3Provider(
+    (window as EthereumWindow).ethereum
+  );
+  const signer = provider.getSigner();
+  const account = await signer.getAddress();
+
+  const propertyTokenManagerContract = new ethers.Contract(
+    PROPERTY_TOKEN_MANAGER_ADDRESS,
+    PropertyTokenManagerArtifact.abi,
+    signer
+  );
+
+  const conversionRate = await getDollarToEtherConversionRate();
+
+  if (!conversionRate) {
+    console.error('Failed to fetch the conversion rate.');
+    return;
+  }
+
+  const valueInEther = value / conversionRate;
+  const valueInWei = ethers.utils.parseEther(valueInEther.toString());
+
+  try {
+    const gasEstimate =
+      await propertyTokenManagerContract.estimateGas.payForShares(id, {
+        from: account,
+        value: valueInWei,
+      });
+
+    const tx = await propertyTokenManagerContract.payForShares(id, {
+      from: account,
+      gasLimit: gasEstimate.add(5000),
+      value: valueInWei,
+    });
+
+    await tx.wait();
+
+    console.log('Property payed');
+  } catch (error) {
+    console.error('Error while sending the transaction:', error);
   }
 };
 

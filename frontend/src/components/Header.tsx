@@ -22,7 +22,7 @@ const Header = () => {
         <Text fontSize='lg' fontWeight='bold' color='white'>
           Real Estate Tokenization
         </Text>
-        <Flex>
+        <Flex flexDirection={'row'}>
           {isContractOwner && (
             <Link href='/owner' passHref>
               <Button colorScheme='blue' variant='ghost' ml={2}>
@@ -30,26 +30,45 @@ const Header = () => {
               </Button>
             </Link>
           )}
-          <Menu>
-            {isConnected && (
+          {isConnected && (
+            <Menu>
               <Box>
-                <MenuButton as={Button} colorScheme='blue' variant='ghost'>
+                <MenuButton
+                  as={Button}
+                  colorScheme='blue'
+                  variant='ghost'
+                  mb={2}
+                >
                   Properties
                 </MenuButton>
                 <MenuList>
                   <Link href='/properties' passHref>
                     <MenuItem>My properties</MenuItem>
                   </Link>
-                  <Link href='/trade' passHref>
-                    <MenuItem>Trade Properties</MenuItem>
-                  </Link>
                   <Link href='/tokenize' passHref>
                     <MenuItem>Tokenization</MenuItem>
                   </Link>
                 </MenuList>
               </Box>
-            )}
-          </Menu>
+            </Menu>
+          )}
+          {isConnected && (
+            <Menu>
+              <Box>
+                <MenuButton as={Button} colorScheme='blue' variant='ghost'>
+                  Trading
+                </MenuButton>
+                <MenuList>
+                  <Link href='/shares' passHref>
+                    <MenuItem>My Shares</MenuItem>
+                  </Link>
+                  <Link href='/orders' passHref>
+                    <MenuItem>Orders</MenuItem>
+                  </Link>
+                </MenuList>
+              </Box>
+            </Menu>
+          )}
           {!isConnected && (
             <Button
               colorScheme='blue'
