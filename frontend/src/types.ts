@@ -35,8 +35,13 @@ export interface PropertyDetails {
 }
 export interface Shareholder {
   shareholder: string;
-  shareAmount: {
-    toNumber(): number;
-  };
-  propertyId?: string;
+  shareAmount: number;
+  propertyId?: number;
 }
+
+export interface SaleOrder {
+  index: number;
+  shareAmount: number;
+}
+
+export type ShareWithOrder = Shareholder & { order?: SaleOrder };

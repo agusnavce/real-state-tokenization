@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import UserShares from '../components/UserShares';
-import { getUserShares } from '../lib/shares';
-import useWallet from '../hooks/useWallet';
+import { getUserSharesWithOrders } from '../lib/shares';
+import { ShareWithOrder } from '../types';
 
-const Shares = () => {
-  const [userShares, setUserShares] = useState([]);
-  const { address } = useWallet();
+const Shares: React.FC = () => {
+  const [userShares, setUserShares] = useState<ShareWithOrder[]>([]);
 
   useEffect(() => {
-    const fetchUserShares = async () => {
-      const saleOrdersData = await getUserShares(address);
+    const fetchData = async () => {
+      const saleOrdersData: ShareWithOrder[] = await getUserSharesWithOrders();
       setUserShares(saleOrdersData);
     };
-    fetchUserShares();
+    fetchData();
   }, []);
+
   return <UserShares userShares={userShares} />;
 };
 

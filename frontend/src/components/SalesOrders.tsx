@@ -43,7 +43,6 @@ const SaleOrders = () => {
 
   return (
     <Box>
-      <Heading mb={4}>Sale Orders</Heading>
       <Table variant='simple'>
         <Thead>
           <Tr>

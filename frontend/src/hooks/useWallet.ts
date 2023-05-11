@@ -59,7 +59,7 @@ const useWallet = (): Wallet => {
     if (address) {
       checkIsContractOwner(address);
     }
-  }, [address, provider]);
+  }, [provider]);
 
   const handleAccountsChanged = async (accounts: string[]) => {
     if (provider && accounts.length) {
