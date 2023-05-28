@@ -31,19 +31,21 @@ const useWallet = (): Wallet => {
         if (accounts.length) {
           const newSigner = provider.getSigner(accounts[0]);
           setSigner(newSigner);
-          setAddress(await newSigner.getAddress());
+          const address = await newSigner.getAddress();
+          console.log('aca', address);
+          setAddress(address);
           setConnected(true);
         }
       };
       const newProvider = new ethers.providers.Web3Provider(
         (window as EthereumWindow).ethereum
       );
+      setProvider(newProvider);
+      fetchUser(newProvider);
       (window as EthereumWindow).ethereum.on(
         'accountsChanged',
         handleAccountsChanged
       );
-      setProvider(newProvider);
-      fetchUser(newProvider);
       return () => {
         if ((window as EthereumWindow).ethereum) {
           (window as EthereumWindow).ethereum.removeListener(
@@ -56,10 +58,11 @@ const useWallet = (): Wallet => {
   }, []);
 
   useEffect(() => {
+    console.log('here', address);
     if (address) {
       checkIsContractOwner(address);
     }
-  }, [provider]);
+  }, [provider, address]);
 
   const handleAccountsChanged = async (accounts: string[]) => {
     if (provider && accounts.length) {

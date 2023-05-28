@@ -207,3 +207,42 @@ export const getAllNotApprovedProperties = async (): Promise<
     return [];
   }
 };
+
+export const payForShares = async (
+  id: number,
+  value: number
+): Promise<void> => {
+  const provider = new ethers.providers.Web3Provider(
+    (window as EthereumWindow).ethereum
+  );
+  const signer = provider.getSigner();
+  const account = await signer.getAddress();
+
+  const propertyTokenManagerContract = new ethers.Contract(
+    PROPERTY_TOKEN_MANAGER_ADDRESS,
+    PropertyTokenManagerArtifact.abi,
+    signer
+  );
+
+  const valueInWei = ethers.utils.parseEther(value.toString());
+
+  try {
+    const gasEstimate =
+      await propertyTokenManagerContract.estimateGas.payForShares(id, {
+        from: account,
+        value: valueInWei,
+      });
+
+    const tx = await propertyTokenManagerContract.payForShares(id, {
+      from: account,
+      gasLimit: gasEstimate.add(5000),
+      value: valueInWei,
+    });
+
+    await tx.wait();
+
+    console.log('Property payed');
+  } catch (error) {
+    console.error('Error while sending the transaction:', error);
+  }
+};

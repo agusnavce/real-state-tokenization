@@ -29,7 +29,8 @@ const ShareholdersList: React.FC<ShareholdersListProps> = ({
             <Flex align='center'>
               <Box>
                 <Text>
-                  {shareholder.shareholder} - {shareholder.shareAmount} shares
+                  {shareholder.shareholder} -{' '}
+                  {shareholder.shareAmount.toString()} shares
                 </Text>
               </Box>
               <Spacer />

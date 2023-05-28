@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { usePropertyContext } from '../contexts/PropertyContext';
 import PropertyCard from '../components/PropertyCard';
 import PropertyRequestCard from '../components/PropertyRequestCard';
-
 import {
   Grid,
   GridItem,
