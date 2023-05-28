@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Box, Table, Thead, Tbody, Tr, Th, Td, Button } from '@chakra-ui/react';
 import SellShareModal from './SellShareModal';
 import { ShareWithOrder } from '../types';
@@ -6,12 +6,26 @@ import { getSharesForSelling } from '../hooks/util';
 
 interface UserSharesProps {
   userShares: ShareWithOrder[];
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  setSelectedShare: Dispatch<SetStateAction<ShareWithOrder>>;
+  selectedShare: ShareWithOrder;
+  handleShareAmountChange: (
+    valueAsString: string,
+    valueAsNumber: number
+  ) => void;
+  handleConfirmSell: () => Promise<void>;
 }
 
-const UserShares: React.FC<UserSharesProps> = ({ userShares }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedShare, setSelectedShare] = useState(null);
-
+const UserShares: React.FC<UserSharesProps> = ({
+  userShares,
+  isOpen,
+  setIsOpen,
+  selectedShare,
+  setSelectedShare,
+  handleShareAmountChange,
+  handleConfirmSell,
+}) => {
   const handleSellShares = (share: ShareWithOrder) => {
     setSelectedShare(share);
     setIsOpen(true);
@@ -20,16 +34,6 @@ const UserShares: React.FC<UserSharesProps> = ({ userShares }) => {
   const handleClose = () => {
     setIsOpen(false);
     setSelectedShare(null);
-  };
-
-  const handleConfirmSell = () => {
-    console.log('Confirmed sell for:', selectedShare);
-    // Implement the logic to sell shares using your smart contract
-    setIsOpen(false);
-  };
-
-  const handleShareAmountChange = (value: string) => {
-    setSelectedShare((prev) => ({ ...prev, shareAmount: value }));
   };
 
   const getShareToSell = (swo: ShareWithOrder) => {

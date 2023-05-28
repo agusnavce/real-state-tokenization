@@ -8,7 +8,6 @@ import {
   Flex,
   Box,
   Spacer,
-  Button,
   Text,
 } from '@chakra-ui/react';
 import { Shareholder } from '../types';
@@ -30,8 +29,7 @@ const ShareholdersList: React.FC<ShareholdersListProps> = ({
             <Flex align='center'>
               <Box>
                 <Text>
-                  {shareholder.shareholder} -{' '}
-                  {shareholder.shareAmount.toNumber()} shares
+                  {shareholder.shareholder} - {shareholder.shareAmount} shares
                 </Text>
               </Box>
               <Spacer />

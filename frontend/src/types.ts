@@ -41,6 +41,7 @@ export interface Shareholder {
 
 export interface SaleOrder {
   index: number;
+  propertyId: number;
   shareAmount: number;
 }
 

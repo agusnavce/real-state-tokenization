@@ -22,7 +22,10 @@ interface SellShareModalProps {
   isOpen: boolean;
   handleClose: () => void;
   handleConfirmSell: () => void;
-  handleShareAmountChange: (value: string) => void;
+  handleShareAmountChange: (
+    valueAsString: string,
+    valueAsNumber: number
+  ) => void;
 }
 
 const SellShareModal: React.FC<SellShareModalProps> = ({

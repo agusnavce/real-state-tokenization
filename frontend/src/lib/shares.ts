@@ -56,8 +56,8 @@ const getUserOrders = async (): Promise<SaleOrder[]> => {
       accountAddress
     );
     return userOrders.map((order: any) => ({
-      index: order.index,
-      shareAmount: order.shareAmount,
+      propertyId: order.propertyId.toString(),
+      shareAmount: order.shareAmount.toString(),
     }));
   } catch (error) {
     console.error('Error fetching user shares:', error);
@@ -68,11 +68,49 @@ const getUserOrders = async (): Promise<SaleOrder[]> => {
 export const getUserSharesWithOrders = async (): Promise<ShareWithOrder[]> => {
   const formattedOrders = await getUserOrders();
   const formattedShares = await getUserShares();
+  console.log(formattedShares, formattedOrders);
   // For each share, see if there's an associated order
   return formattedShares.map((share) => {
     const order = formattedOrders.find(
-      (order) => order.index === share.propertyId
+      (order) => order.propertyId === share.propertyId
     );
     return { ...share, order };
   });
+};
+
+export const createSaleOrder = async (
+  propertyId: number,
+  shareAmount: number
+) => {
+  const provider = new ethers.providers.Web3Provider(
+    (window as EthereumWindow).ethereum
+  );
+  const signer = provider.getSigner();
+  const address = await signer.getAddress();
+
+  const shareTokenManagerContract = new ethers.Contract(
+    SHARE_TOKEN_MANAGER_ADDRESS,
+    SharesTokenManagerArtifact.abi,
+    signer
+  );
+
+  try {
+    const gasEstimate =
+      await shareTokenManagerContract.estimateGas.createSaleOrder(
+        propertyId,
+        shareAmount,
+        { from: address }
+      );
+
+    const tx = await shareTokenManagerContract.createSaleOrder(
+      propertyId,
+      shareAmount,
+      { from: address, gasLimit: gasEstimate.add(5000) }
+    );
+
+    // Wait for transaction to be mined
+    await tx.wait();
+  } catch (error) {
+    console.error('Error creating sale order:', error);
+  }
 };
